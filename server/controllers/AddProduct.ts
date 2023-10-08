@@ -4,6 +4,12 @@ import User from "../models/user";
 const addProduct = async (req: any, res: any) => {
   try {
     const { productName, price, email } = req.body;
+    if (!productName || !price || !email) {
+      return res.status(400).json({
+        success: false,
+        message: "Product name, price and email are required",
+      });
+    }
 
     const product = await Product.findOne({ name: productName }).populate(
       "users"

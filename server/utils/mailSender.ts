@@ -15,15 +15,15 @@ const mailSender = async (email: String, title: String, body: String) => {
     });
 
     let info = await transporter.sendMail({
-      from: `"Study Notion" <${process.env.MAIL_USER}>`,
+      from: `"FlipTrack" <${process.env.MAIL_USER}>`,
       to: `${email}`,
       subject: `${title}`,
       html: `${body}`,
     });
-    return info;
+    return true;
   } catch (error: any) {
     console.log(error.message);
-    return error;
+    return false;
   }
 };
 

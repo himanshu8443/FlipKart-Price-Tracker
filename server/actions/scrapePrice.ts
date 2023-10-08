@@ -6,7 +6,7 @@ function extractNumericPrice(priceText: string) {
   // Remove any non-numeric characters, including the rupee symbol
   const numericPrice = priceText.replace(/[^0-9.]/g, "");
 
-  return numericPrice;
+  return Number(numericPrice);
 }
 
 // Function to scrape the price
@@ -24,9 +24,16 @@ async function scrapePrice(argument: string) {
 
     // Extract the text and apply the extractNumericPrice function to get the numeric value
     const priceText = priceElement.text().trim();
-    const numericPrice = extractNumericPrice(priceText);
+    const numericPrice =
+      extractNumericPrice(priceText) || Number.MAX_SAFE_INTEGER;
 
-    return numericPrice;
+    const titleElement = $(".B_NuCI");
+    const titleText = titleElement.text().trim() || "";
+
+    const imgElement = $("._396cs4");
+    const imgSrc = imgElement.attr("src") || "";
+
+    return { numericPrice, titleText, imgSrc };
   } catch (error: any) {
     console.error("Error:", error.message);
     return null;

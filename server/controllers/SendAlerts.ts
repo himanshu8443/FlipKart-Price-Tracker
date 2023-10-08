@@ -2,21 +2,36 @@ import Product from "../models/product";
 import User from "../models/user";
 import { mailSender } from "../utils/mailSender";
 import scrapePrice from "../actions/scrapePrice";
+import Alert from "../templates/alert";
 
 const SendAlerts = async (req: any, res: any) => {
   try {
     const allProducts = await Product.find({}).populate("users");
-    allProducts.forEach(async (product: any) => {
+    allProducts?.forEach(async (product: any) => {
       const { name, users } = product;
-      const currentPrice = (await scrapePrice(name)) || Number.MAX_SAFE_INTEGER;
-      users.forEach(async (user: any) => {
-        const { email, price: minPrice } = user;
+      const {
+        numericPrice: currentPrice,
+        titleText,
+        imgSrc,
+      } = (await scrapePrice(name)) || {
+        numericPrice: Number.MAX_SAFE_INTEGER,
+        titleText: "",
+        imgSrc: "",
+      };
+      users?.forEach(async (user: any) => {
+        const { email, price: minPrice, _id } = user;
         if (currentPrice <= minPrice) {
           console.log("currentPrice", currentPrice);
           console.log("minPrice", minPrice);
-          const body = `The price of ${name} has dropped to ${currentPrice}`;
-          await mailSender(email, "Price drop", body);
+          const body = Alert(imgSrc, name, currentPrice, titleText);
+          const mail = await mailSender(email, "Price drop", body);
           console.log("Email sent", email);
+          if (mail) {
+            await User.findByIdAndDelete(_id);
+            await Product.findByIdAndUpdate(product._id, {
+              $pull: { users: _id },
+            });
+          }
         }
       });
     });
