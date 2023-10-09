@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
 });
 
 // Routes
-app.post("/api/add-product", addProduct);
+app.post("/api/add-product-tracking", addProduct);
 app.get("/api/send-alerts", SendAlerts);
 app.post("/api/search-product", SearchProduct);
 

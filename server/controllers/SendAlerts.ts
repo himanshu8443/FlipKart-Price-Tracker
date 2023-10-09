@@ -9,6 +9,7 @@ const SendAlerts = async (req: any, res: any) => {
     const allProducts = await Product.find({}).populate("users");
     allProducts?.forEach(async (product: any) => {
       const { name, users } = product;
+      if (!users?.length) await Product.findByIdAndDelete(product._id);
       const {
         numericPrice: currentPrice,
         titleText,
@@ -20,9 +21,9 @@ const SendAlerts = async (req: any, res: any) => {
       };
       users?.forEach(async (user: any) => {
         const { email, price: minPrice, _id } = user;
+        console.log("currentPrice", currentPrice);
+        console.log("minPrice", minPrice);
         if (currentPrice <= minPrice) {
-          console.log("currentPrice", currentPrice);
-          console.log("minPrice", minPrice);
           const body = Alert(imgSrc, name, currentPrice, titleText);
           const mail = await mailSender(email, "Price drop", body);
           console.log("Email sent", email);

@@ -1,5 +1,6 @@
 import { Data } from "../App";
 import { search } from "../api/api";
+import linkToName from "../utils/getproductArgument";
 
 interface SetData {
   setData: React.Dispatch<React.SetStateAction<Data>>;
@@ -8,15 +9,16 @@ interface SetData {
 const SearchProduct = ({ setData }: SetData) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const url = e.currentTarget.floating_search.value;
-    console.log("url", url);
-    const res = await search(url);
+    const productArgument = linkToName(e.currentTarget.floating_search.value);
+    console.log("url", productArgument);
+    const res = await search(productArgument);
     console.log("res", res);
     if (res.success) {
       setData({
         src: res.data.imgSrc,
         titleText: res.data.titleText,
         priceText: res.data.numericPrice,
+        productArgument: productArgument,
       });
     }
   };

@@ -1,28 +1,17 @@
 import scrapePrice from "../actions/scrapePrice";
 
-function linkToName(link: string) {
-  try {
-    const match = link.match(/\.com\/(.+)/);
-    if (match && match[1]) {
-      return match[1];
-    }
-  } catch (error: any) {
-    console.error("Error:", error.message);
-  }
-  return "";
-}
-
 const SearchProduct = async (req: any, res: any) => {
   try {
-    const { productLink } = req.body;
-    if (!productLink) {
+    const { productArgument } = req.body;
+    if (!productArgument) {
       return res
         .status(400)
         .json({ success: false, message: "Product link is required" });
     }
 
-    const name = linkToName(productLink);
-    const { numericPrice, titleText, imgSrc } = (await scrapePrice(name)) || {
+    const { numericPrice, titleText, imgSrc } = (await scrapePrice(
+      productArgument
+    )) || {
       numericPrice: Number.MAX_SAFE_INTEGER,
       titleText: "",
       imgSrc: "",

@@ -4,7 +4,7 @@ type Product = {
   price: number;
 };
 
-export const search = async (link: string) => {
+export const search = async (productArgument: string) => {
   try {
     const response = await fetch(
       import.meta.env.VITE_API_URL + "/api/search-product",
@@ -13,7 +13,7 @@ export const search = async (link: string) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ productLink: link }),
+        body: JSON.stringify({ productArgument }),
       }
     );
     const data = await response.json();
@@ -23,10 +23,10 @@ export const search = async (link: string) => {
   }
 };
 
-export const addProduct = async (product: Product) => {
+export const addProductTracking = async (product: Product) => {
   try {
     const response = await fetch(
-      import.meta.env.VITE_API_URL + "/api/add-product",
+      import.meta.env.VITE_API_URL + "/api/add-product-tracking",
       {
         method: "POST",
         headers: {

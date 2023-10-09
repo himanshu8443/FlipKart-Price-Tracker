@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import alert from "./assets/alert.svg";
 import SearchProduct from "./components/SearchProduct";
+import { addProductTracking } from "./api/api";
+import linkToName from "./utils/getproductArgument";
 
 export interface Data {
   src: string;
@@ -16,10 +18,22 @@ function App() {
     titleText: "",
     priceText: "",
   });
-  const [userData, setUserData] = useState<any>({});
-
+  const [userData, setUserData] = useState<any>({
+    email: localStorage.getItem("email") || "",
+    price: "",
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    localStorage.setItem("email", userData.email);
+    e.preventDefault();
+    const product = {
+      email: userData.email,
+      price: userData.price,
+      productName: data.productArgument!,
+    };
+    const res = await addProductTracking(product);
+    console.log(res);
+  };
 
   useEffect(() => {
     async function getUrl() {
@@ -28,6 +42,7 @@ function App() {
         currentWindow: true,
       });
       if (tab) {
+        setData((prev) => ({ ...prev, productArgument: linkToName(tab.url!) }));
         chrome.scripting.executeScript(
           {
             target: { tabId: tab.id! },
@@ -73,9 +88,16 @@ function App() {
           </p>
         </div>
       </div>
-      <form className="flex flex-col gap-2 items-start mt-8 justify-start font-semibold max-md:ml-24">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-2 items-start mt-8 justify-start font-semibold max-md:ml-24"
+      >
         <div className="relative z-0 w-full mb-6 group max-w-sm">
           <input
+            value={userData.email}
+            onChange={(e) =>
+              setUserData({ ...userData, email: e.target.value })
+            }
             type="email"
             name="floating_email"
             id="floating_email"
@@ -98,6 +120,10 @@ function App() {
             <span className="text-lg mb-4">₹</span>
             <div className="relative z-0 w-full mb-6 group max-w-xs">
               <input
+                value={userData.price}
+                onChange={(e) =>
+                  setUserData({ ...userData, price: e.target.value })
+                }
                 type="number"
                 name="price"
                 id="price"
@@ -117,7 +143,10 @@ function App() {
             </span>
           </div>
         </div>
-        <button className="bg-[#FB641B] items-center flex gap-2 text-white font-bold py-2.5 px-5  mt-4 max-md:ml-24">
+        <button
+          type="submit"
+          className="bg-[#FB641B] items-center flex gap-2 text-white font-bold py-2.5 px-5  mt-4 max-md:ml-24"
+        >
           Start Tracking
           <img src={alert} alt="" className="w-5 h-5 filter_white" />
         </button>
