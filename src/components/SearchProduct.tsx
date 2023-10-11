@@ -1,25 +1,32 @@
 import { Data } from "../App";
 import { search } from "../api/api";
 import linkToName from "../utils/getproductArgument";
+import { toast } from "react-toastify";
+import { useState } from "react";
 
 interface SetData {
   setData: React.Dispatch<React.SetStateAction<Data>>;
 }
 
 const SearchProduct = ({ setData }: SetData) => {
+  const [loading, setLoading] = useState<boolean>(false);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     const productArgument = linkToName(e.currentTarget.floating_search.value);
     console.log("url", productArgument);
     const res = await search(productArgument);
-    console.log("res", res);
+    setLoading(false);
     if (res.success) {
+      toast.success(res.message);
       setData({
         src: res.data.imgSrc,
         titleText: res.data.titleText,
         priceText: res.data.numericPrice,
         productArgument: productArgument,
       });
+    } else {
+      toast.error("Error in fetching product details, Try again");
     }
   };
 
@@ -36,7 +43,7 @@ const SearchProduct = ({ setData }: SetData) => {
       </p>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-2 items-start mt-8 justify-start font-semibold ml-24"
+        className="flex flex-col gap-2 items-start mt-8 justify-start font-semibold "
       >
         <div className="relative z-0 w-full mb-6 group min-w-[70vw]">
           <input
@@ -54,13 +61,17 @@ const SearchProduct = ({ setData }: SetData) => {
             Enter FlipKart Product URL
           </label>
         </div>
-        <div className="flex gap-2 items-center mt-2 justify-center w-full">
-          <button
-            type="submit"
-            className="bg-[#FB641B] active:bg-opacity-70 hover:bg-opacity-90 items-center flex gap-2 text-white font-bold py-2.5 px-5  mt-4 max-md:ml-24"
-          >
-            Search
-          </button>
+        <div className="flex items-center mt-2 justify-center w-full">
+          {loading ? (
+            <div className="loader"></div>
+          ) : (
+            <button
+              type="submit"
+              className="bg-[#FB641B] w-[90px] active:bg-opacity-70 hover:bg-opacity-90 items-center flex justify-center text-white font-bold py-2.5 px-5  mt-4"
+            >
+              Search
+            </button>
+          )}
         </div>
       </form>
     </div>

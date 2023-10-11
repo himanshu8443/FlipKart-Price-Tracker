@@ -4,6 +4,7 @@ import alert from "./assets/alert.svg";
 import SearchProduct from "./components/SearchProduct";
 import { addProductTracking } from "./api/api";
 import linkToName from "./utils/getproductArgument";
+import { toast } from "react-toastify";
 
 export interface Data {
   src: string;
@@ -22,6 +23,7 @@ function App() {
     email: localStorage.getItem("email") || "",
     price: "",
   });
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     localStorage.setItem("email", userData.email);
@@ -31,32 +33,50 @@ function App() {
       price: userData.price,
       productName: data.productArgument!,
     };
+    setLoading(true);
     const res = await addProductTracking(product);
+    setLoading(false);
+    if (res.success === true) {
+      toast.success(res.message);
+    } else {
+      toast.error(res.message || "Error in adding product, Try again");
+    }
+
     console.log(res);
   };
 
   useEffect(() => {
+    console.log("useEffect");
     async function getUrl() {
       let [tab] = await chrome.tabs.query({
         active: true,
         currentWindow: true,
       });
-      if (tab) {
-        setData((prev) => ({ ...prev, productArgument: linkToName(tab.url!) }));
+      if (tab.id) {
+        setData((prev) => ({
+          ...prev,
+          productArgument: linkToName(tab.url!),
+        }));
         chrome.scripting.executeScript(
           {
-            target: { tabId: tab.id! },
+            target: { tabId: tab.id },
             func: () => {
+              console.log("executed");
               const img = document.querySelector(
-                "._396cs4  "
+                "._396cs4"
               ) as HTMLImageElement;
-              const src = img.getAttribute("src") as string;
+              const img2 = document.querySelector(
+                "._2r_T1I"
+              ) as HTMLImageElement;
+
+              const src =
+                img?.getAttribute("src") || img2?.getAttribute("src") || "";
 
               const title = document.querySelector(".B_NuCI") as HTMLElement;
-              const titleText = title.innerText;
+              const titleText = title?.innerText;
 
               const price = document.querySelector("._30jeq3") as HTMLElement;
-              const priceText = price.innerText;
+              const priceText = price?.innerText;
 
               const data = {
                 src,
@@ -67,7 +87,9 @@ function App() {
             },
           },
           (result) => {
-            setData(result[0].result);
+            if (result && result[0].result.priceText) {
+              setData((prev) => ({ ...prev, ...result[0].result }));
+            }
           }
         );
       }
@@ -75,22 +97,25 @@ function App() {
     getUrl();
   }, []);
 
-  return data.priceText ? (
+  return data?.priceText !== "" ? (
     <div className="flex flex-col gap-3 min-h-[400px] min-w-[600px] p-5 mt-6 justify-center items-center">
       <div className="flex gap-4 justify-start items-center text-sm">
         <div className="w-24 h-24">
           <img src={data.src} alt="" className=" aspect-auto" />
         </div>
         <div className="flex flex-col gap-3">
-          <p className="text-gray-800 font-semibold">{data.titleText}</p>
-          <p className="text-gray-500 font-bold">
-            Current Price <span className=" text-black">{data.priceText}</span>
+          <p className="text-gray-800 font-semibold text-xl">
+            {data.titleText}
+          </p>
+          <p className="text-gray-500 font-bold text-lg flex items-center gap-1">
+            Current Price{" "}
+            <span className=" text-[#FB641B] text-xl">{data.priceText}</span>
           </p>
         </div>
       </div>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-2 items-start mt-8 justify-start font-semibold max-md:ml-24"
+        className="flex flex-col gap-2 items-start mt-14 justify-start font-semibold max-md:ml-24"
       >
         <div className="relative z-0 w-full mb-6 group max-w-sm">
           <input
@@ -143,13 +168,19 @@ function App() {
             </span>
           </div>
         </div>
-        <button
-          type="submit"
-          className="bg-[#FB641B] items-center flex gap-2 text-white font-bold py-2.5 px-5  mt-4 max-md:ml-24"
-        >
-          Start Tracking
-          <img src={alert} alt="" className="w-5 h-5 filter_white" />
-        </button>
+        <div className="flex justify-center items-center w-full min-h-[100px] ">
+          {loading ? (
+            <div className="loader mr-8"></div>
+          ) : (
+            <button
+              type="submit"
+              className="bg-[#FB641B] items-center flex gap-2 text-white font-bold py-2.5 px-5  mt-4 mr-8"
+            >
+              Start Tracking
+              <img src={alert} alt="" className="w-5 h-5 filter_white" />
+            </button>
+          )}
+        </div>
       </form>
     </div>
   ) : (

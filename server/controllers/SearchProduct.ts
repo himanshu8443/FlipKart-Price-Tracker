@@ -16,6 +16,11 @@ const SearchProduct = async (req: any, res: any) => {
       titleText: "",
       imgSrc: "",
     };
+    if (numericPrice === Number.MAX_SAFE_INTEGER) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Error, Please try again" });
+    }
 
     return res.status(200).json({
       success: true,
