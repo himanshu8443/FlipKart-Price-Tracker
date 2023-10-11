@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf dist && tsc",
+    "build": "rimraf dist && npx tsc",
     "start": "npm run build && node dist/index.js",
     "predev": "rimraf dist && tsc",
     "dev": "concurrently \"npx tsc -w\" \"nodemon dist/index.js\""
@@ -24,6 +24,7 @@
     "@types/node": "^20.8.2",
     "concurrently": "^8.2.1",
     "nodemon": "^3.0.1",
-    "rimraf": "^5.0.5"
+    "rimraf": "^5.0.5",
+    "typescript": "^5.2.2"
   }
 }
