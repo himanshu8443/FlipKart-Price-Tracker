@@ -17,16 +17,21 @@ async function scrapePrice(argument: string) {
     const url = `https://www.flipkart.com/${argument}`;
     // Make an HTTP GET request to the page
 
+    const username = process.env.PROXY_USERNAME!;
+    const session = Math.floor(Math.random() * 10000 + 1);
     const options = {
       auth: {
-        username: process.env.PROXY_USERNAME!,
+        username: `${username}-session-${session}`,
         password: process.env.PROXY_PASSWORD!,
       },
       host: process.env.PROXY_HOST,
       port: process.env.PROXY_PORT,
       rejectUnauthorized: false,
     };
+
     const response = await axios.get(url, options);
+
+    console.log(options);
 
     // Load the HTML content into cheerio
     const $ = cheerio.load(response.data);
