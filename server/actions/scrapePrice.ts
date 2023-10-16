@@ -1,6 +1,8 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
+import dotenv from "dotenv";
 
+dotenv.config();
 // Function to extract numeric price
 function extractNumericPrice(priceText: string) {
   // Remove any non-numeric characters, including the rupee symbol
@@ -14,7 +16,17 @@ async function scrapePrice(argument: string) {
   try {
     const url = `https://www.flipkart.com/${argument}`;
     // Make an HTTP GET request to the page
-    const response = await axios.get(url);
+
+    const options = {
+      auth: {
+        username: process.env.PROXY_USERNAME!,
+        password: process.env.PROXY_PASSWORD!,
+      },
+      host: process.env.PROXY_HOST,
+      port: process.env.PROXY_PORT,
+      rejectUnauthorized: false,
+    };
+    const response = await axios.get(url, options);
 
     // Load the HTML content into cheerio
     const $ = cheerio.load(response.data);
