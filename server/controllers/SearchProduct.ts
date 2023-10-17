@@ -16,6 +16,7 @@ const SearchProduct = async (req: any, res: any) => {
       titleText: "",
       imgSrc: "",
     };
+    console.log(numericPrice, titleText, imgSrc);
     if (numericPrice === Number.MAX_SAFE_INTEGER) {
       return res
         .status(400)

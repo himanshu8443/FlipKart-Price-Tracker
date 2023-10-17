@@ -1,11 +1,11 @@
-import axios from "axios";
 import * as cheerio from "cheerio";
 import dotenv from "dotenv";
+import { HttpsProxyAgent } from "https-proxy-agent";
+import axios from "axios";
 
 dotenv.config();
-// Function to extract numeric price
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 function extractNumericPrice(priceText: string) {
-  // Remove any non-numeric characters, including the rupee symbol
   const numericPrice = priceText.replace(/[^0-9.]/g, "");
 
   return Number(numericPrice);
@@ -17,24 +17,19 @@ async function scrapePrice(argument: string) {
     const url = `https://www.flipkart.com/${argument}`;
     // Make an HTTP GET request to the page
 
-    const username = process.env.PROXY_USERNAME!;
-    const session = Math.floor(Math.random() * 10000 + 1);
+    const proxy = process.env.Proxy_URL;
+    const agent = new HttpsProxyAgent(proxy!);
+
     const options = {
-      auth: {
-        username: `${username}-session-${session}`,
-        password: process.env.PROXY_PASSWORD!,
-      },
-      host: process.env.PROXY_HOST,
-      port: process.env.PROXY_PORT,
+      httpsAgent: agent,
       rejectUnauthorized: false,
     };
 
-    const response = await axios.get(url, options);
+    const data = await axios.get(url, options);
 
-    console.log(options);
-
+    const response = await data.data;
     // Load the HTML content into cheerio
-    const $ = cheerio.load(response.data);
+    const $ = cheerio.load(response);
 
     // Find the element with both classes "_16Jk6d" and "_30jeq3" and extract its text
     const priceElement = $("._16Jk6d"); // Replace with the actual selector
