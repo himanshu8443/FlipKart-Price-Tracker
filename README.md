@@ -4,7 +4,7 @@
 
 # Get on
 [![Image Description](https://i.imgur.com/sEB2m5m.png)](https://microsoftedge.microsoft.com/addons/detail/fliptrack-flipkart-pric/bnpdinlljjfikbfieldlipidieagnmep)
-   ![Available Chrome Web Store](https://github.com/himanshu8443/FlipKart-Price-Tracker/assets/99420590/2a3b606d-4770-4a2e-8d1c-7c7be60749e5)
+   [![Available Chrome Web Store](https://i.imgur.com/dsKixGv.png)](https://chromewebstore.google.com/detail/fliptrack-flipkart-price/pekpfcghlbljghaojdlajgpceebobokd?hl=en)
 
 # React + TypeScript + Vite
 
