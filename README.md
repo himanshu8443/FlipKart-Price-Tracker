@@ -2,9 +2,10 @@
  Flipkart product price Tracker and sends alert when price drops.
 
 
-# Get on
-[![Image Description](https://i.imgur.com/sEB2m5m.png)](https://microsoftedge.microsoft.com/addons/detail/fliptrack-flipkart-pric/bnpdinlljjfikbfieldlipidieagnmep)
-   [![Available Chrome Web Store](https://i.imgur.com/dsKixGv.png)](https://chromewebstore.google.com/detail/fliptrack-flipkart-price/pekpfcghlbljghaojdlajgpceebobokd?hl=en)
+# Get it on
+Not available publicly as I can't afford residential proxies cost is increasing with users
+<!--[![Image Description](https://i.imgur.com/sEB2m5m.png)](https://microsoftedge.microsoft.com/addons/detail/fliptrack-flipkart-pric/bnpdinlljjfikbfieldlipidieagnmep)
+   [![Available Chrome Web Store](https://i.imgur.com/dsKixGv.png)](https://chromewebstore.google.com/detail/fliptrack-flipkart-price/pekpfcghlbljghaojdlajgpceebobokd?hl=en)-->
 
 # React + TypeScript + Vite
 
