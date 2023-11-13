@@ -11,7 +11,8 @@ Not available publicly as I can't afford residential proxies cost is increasing 
 
 ### client (Extension)
 ```
-git clone https://github.com/himanshu8443/FlipKart-Price-Tracker
+git clone https://github.com/himanshu8443/FlipKart-Price-Tracker.git
+cd FlipKart-Price-Tracker
 npm install
 ```
 env
